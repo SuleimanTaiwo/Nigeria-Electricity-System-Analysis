@@ -1,0 +1,35 @@
+SELECT country,
+    year,
+    population,
+    gdp / 1000000000::double precision AS gdp_billion_usd,
+    primary_energy_consumption AS primary_energy_twh,
+    electricity_generation AS elec_generation_twh,
+    electricity_generation * 1000000000::double precision / NULLIF(gdp, 0::double precision) AS kwh_per_usd_gdp,
+    electricity_demand_per_capita AS elec_demand_per_person_kwh,
+    greenhouse_gas_emissions,
+    carbon_intensity_elec,
+        CASE
+            WHEN primary_energy_consumption IS NULL OR primary_energy_consumption = 0::double precision THEN 0::double precision
+            ELSE electricity_generation / primary_energy_consumption * 100::double precision
+        END AS computed_electricity_share_energy,
+    renewables_share_elec,
+    low_carbon_share_elec,
+    fossil_share_elec,
+    per_capita_electricity,
+    renewables_elec_per_capita,
+    per_capita_electricity - renewables_elec_per_capita AS non_renewable_per_capita,
+    renewables_elec_per_capita / NULLIF(per_capita_electricity, 0::double precision) * 100::double precision AS renewables_share_per_capita_pct,
+    renewables_share_elec - fossil_share_elec AS net_decarbonization_index,
+    renewables_share_elec - fossil_share_elec - lag(renewables_share_elec - fossil_share_elec) OVER (PARTITION BY country ORDER BY year) AS elec_per_year,
+    electricity_generation,
+    solar_electricity AS solar_elec_twh,
+    wind_electricity AS wind_elec_twh,
+    hydro_electricity AS hydro_elec_twh,
+    biofuel_electricity AS biofuel_elec_twh,
+    other_renewable_electricity AS other_ren_elec_twh,
+    gas_electricity AS gas_elec_twh,
+    (solar_electricity - lag(solar_electricity) OVER (ORDER BY year)) / NULLIF(lag(solar_electricity) OVER (ORDER BY year), 0::double precision) * 100::double precision AS solar_growth_pct,
+    (wind_electricity - lag(wind_electricity) OVER (ORDER BY year)) / NULLIF(lag(wind_electricity) OVER (ORDER BY year), 0::double precision) * 100::double precision AS wind_growth_pct,
+    (hydro_electricity - lag(hydro_electricity) OVER (ORDER BY year)) / NULLIF(lag(hydro_electricity) OVER (ORDER BY year), 0::double precision) * 100::double precision AS hydro_growth_pct
+   FROM ng_energy
+  WHERE country = 'Nigeria'::text AND year >= 2000 AND year <= 2024;
