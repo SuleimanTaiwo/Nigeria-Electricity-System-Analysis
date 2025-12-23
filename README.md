@@ -136,10 +136,8 @@ Nigeria’s current pace of electricity-sector growth is **not aligned** with it
 
 ##  Dashboard Video Walkthrough
 
-*Embed or link your 1-minute narration video here*
-
-**Example script:**  
-> This dashboard tracks Nigeria’s electricity mix from 2000 to 2024.  
+[Watch the 60-second silent dashboard walkthrough](https://github.com/SuleimanTaiwo/Nigeria-Electricity-System-Analysis/releases/download/v1.0-dashboard-walkthrough/Elect_1.mp4)  
+This dashboard tracks Nigeria’s electricity mix from 2000 to 2024.
 
 
 ---
